@@ -1,5 +1,5 @@
 {
-  "name": "crazybooot/base64-validation",
+  "name": "mogi/base64-validation",
   "description": "Laravel validators for base64 encoded files",
   "keywords": [
     "base64",
