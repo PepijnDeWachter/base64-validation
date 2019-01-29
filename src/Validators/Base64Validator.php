@@ -176,4 +176,38 @@ class Base64Validator
 
         return new File($tmpFile);
     }
+
+    /**
+     * Validate the dimensions of an image matches the given values.
+     * overridden from ValidatesAttributes
+     *
+     * @param  string $attribute
+     * @param  mixed $value
+     * @param  array $parameters
+     * @return bool
+     */
+    public function validateDimensions($attribute, $value, $parameters)
+    {
+        //using getMimeType instead of getClientMimeType
+        if ($this->isValidFileInstance($value) && $value->getMimeType() == 'image/svg+xml') {
+            return true;
+        }
+
+        if (! $this->isValidFileInstance($value) || ! $sizeDetails = @getimagesize($value->getRealPath())) {
+            return false;
+        }
+
+        $this->requireParameterCount(1, $parameters, 'dimensions');
+
+        list($width, $height) = $sizeDetails;
+
+        $parameters = $this->parseNamedParameters($parameters);
+
+        if ($this->failsBasicDimensionChecks($parameters, $width, $height) ||
+            $this->failsRatioCheck($parameters, $width, $height)) {
+            return false;
+        }
+
+        return true;
+    }
 }
